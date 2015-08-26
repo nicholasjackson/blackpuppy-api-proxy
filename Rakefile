@@ -16,7 +16,7 @@ end
 task :push do
 	p "Push image to registry"
 
-	image =  find_image "blackpuppy/apiproxy:latest"
+	image =  find_image "#{IMAGE_NAME}:latest"
 	image.tag('repo' => "tutum.co/nicholasjackson/#{IMAGE_NAME}", 'force' => true) unless image.info["RepoTags"].include? "tutum.co/nicholasjackson/#{IMAGE_NAME}:latest"
 
   sh "docker login -u #{DOCKER_REGISTRY_USER} -p #{DOCKER_REGISTRY_PASS} -e #{DOCKER_REGISTRY_EMAIL} https://tutum.co"
