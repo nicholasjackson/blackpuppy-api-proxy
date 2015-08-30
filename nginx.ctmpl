@@ -33,10 +33,22 @@ http {
       server {{key "blackpuppy/api/helloworld"}} max_fails=3 fail_timeout=60 weight=1;
     }
 
+    upstream mail {
+      least_conn;
+      server {{key "blackpuppy/api/mail/server"}} max_fails=3 fail_timeout=60 weight=1;
+    }
+
     server {
       location /api {
         rewrite    /api/([^/]+) /$1 break;
         proxy_pass http://app;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+      }
+
+      location /mail {
+        proxy_pass http://mail;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
